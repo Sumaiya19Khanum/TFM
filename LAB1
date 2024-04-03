@@ -1,0 +1,48 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data = pd.read_csv("monthly_beer.csv")
+data.head(5)
+
+data.info()
+
+df = data.iloc[:, [0, 1]]
+df
+
+sns.lineplot(df)
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+# Read data from CSV file
+data = pd.read_csv("monthly_beer.csv")
+
+# 1. Check for missing values
+missing_values = data.isnull().sum()
+if missing_values.any():
+    print("Missing values found!")
+    print(missing_values)
+
+    # 2. Select an interpolation technique to fill missing values
+    data['Monthly beer production'] = data['Monthly beer production'].interpolate()
+
+
+
+# 3. Convert the time period to Python datetime object
+data['Month'] = pd.to_datetime(data['Month'])
+
+# 4. Plot the time series data
+plt.figure(figsize=(10, 5))
+plt.plot(data['Month'], data['Monthly beer production'], marker='o')
+plt.xlabel('Month')
+plt.ylabel('Production')
+plt.title('Monthly Beer Production')
+plt.grid(True)
+plt.show()
+
+
+result = seasonal_decompose(data['Monthly beer production'], model='additive', period=12)
+result.plot()
+plt.show()
